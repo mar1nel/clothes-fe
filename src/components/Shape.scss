@@ -1,0 +1,27 @@
+.shape-wrapper {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 16px;
+  justify-content: center;
+  vertical-align: middle;
+
+  .shape {
+    color: #acacff;
+    width: 4rem;
+    height: 4rem;
+
+    &.circle {
+      color: #e242c5;
+    }
+
+    &.star {
+      color: #0072e1;
+      width: 3.25rem;
+    }
+
+    &.spike {
+      color: #f68f26;
+    }
+  }
+
+}
