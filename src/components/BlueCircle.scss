@@ -1,0 +1,18 @@
+/* ─── BlueCircleSection.scss ──────────────────────────────────────────────── */
+
+.blue-circle-wrapper {
+  position: relative; /* so the absolute circle inside can be centered in here */
+  width: 100%;
+  overflow: hidden; /* any part of the circle that sticks outside is clipped */
+}
+
+.blue-circle-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #007bff;
+  border-radius: 50%;
+  /* width/height come from the inline style on the div */
+  z-index: -1; /* if you want content inside this section to sit on top */
+}

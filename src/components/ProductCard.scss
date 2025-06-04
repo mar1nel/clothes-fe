@@ -1,0 +1,95 @@
+/* ─── 1) Wrapper card, with top corners rounded and bottom corners square ─── */
+.product-card {
+  position: relative;
+  /*  You can adjust width/height to suit your layout. Below is an example size. */
+  width: 220px;
+  height: 330px;
+
+  background-color: #f9f9f9;
+  border-top-left-radius: 36px;
+  border-top-right-radius: 36px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+
+  /* Add a subtle drop-shadow if desired */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  /* Use flex column to space out image & button */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  /* Padding inside the card (below the badge overlap) */
+  //padding-top: 40px; /* enough to leave room for the badge */
+  padding-bottom: 20px;
+  box-sizing: border-box;
+}
+
+/* ─── 2) Badge: a small pill/cloud that overlaps the top edge ───────────────── */
+.product-badge {
+  position: absolute;
+  top: -12px; /* pull it up so it overlaps the top border */
+  left: 50%;
+  transform: translateX(-50%);
+
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 16px; /* pill shape */
+  white-space: nowrap; /* prevent wrapping */
+
+  /* Optional border/shadow to make it stand out */
+  //border: 1px solid #dddddd;
+  //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ─── 3) Image container (centered) ──────────────────────────────────────────── */
+.product-image-container {
+  flex: 1; /* let the image area grow to fill available vertical space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  //padding: 0 12px; /* horizontal padding so the image has some breathing room */
+  box-sizing: border-box;
+}
+
+.product-image {
+  max-width: 100%;
+  //max-height: 100%;
+  object-fit: contain;
+  /* If you want a gray placeholder background: */
+  //background-color: #e0e0e0;
+  border-radius: 16px;
+  //margin-top: 10px;
+  //padding: 16px;
+}
+
+/* ─── 4) Button at the bottom ───────────────────────────────────────────────── */
+.product-button {
+  width: 80%;
+  padding: 8px 0;
+  margin-bottom: 8px;
+
+  //background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #cccccc;
+  border-radius: 20px;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.product-button:hover {
+  background-color: #f0f0f0;
+}
+
+.product-button:active {
+  transform: scale(0.96);
+}

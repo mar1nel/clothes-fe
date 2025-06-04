@@ -1,0 +1,28 @@
+.go-shopping-button {
+  background-color: var(--bg-color, #dfff5f);
+  color: var(--font-color, #2a4d14);
+  font-family: "Martian Mono", monospace;
+
+  border: none;
+  border-radius: 56px;
+  padding: 32px 64px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: #dfff5f;
+  }
+
+  &:active {
+    transform: scale(0.8);
+    transition: transform 1s ease;
+  }
+}

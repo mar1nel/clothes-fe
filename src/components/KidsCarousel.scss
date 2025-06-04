@@ -1,0 +1,40 @@
+/* ─── The outer viewport: fixed height 300px, overflow hidden ───────────────── */
+.carousel-viewport {
+  position: relative;
+  width: 100%; // fill whatever parent width you have
+  height: 450px; // total visible height
+  overflow: hidden; // hide anything that scrolls beyond the sides
+  //background-color: red
+
+}
+
+/* ─── The moving track: a flex container of all items ────────────────────────── */
+.carousel-track {
+  display: flex; // lay .carousel-items in a row
+  position: absolute; // so that .carousel-item top offsets position correctly
+  will-change: transform; // hint for smoother animation
+}
+
+/* ─── Wrapper around exactly two sets of items (for measurement) ───────────── */
+.carousel-items {
+  display: flex; // lays each .carousel-item side by side
+
+}
+
+/* ─── Each item: fixed width 200px, fixed height 150px ─────────────────────── */
+.carousel-item {
+  border-radius: 12px;
+  position: relative; // so that top: <px> actually shifts each item vertically
+  flex: 0 0 auto; // do not shrink or grow; use exact width
+  min-width: 200px; // fixed width for measuring → ensures predictability
+  height: 150px; // fixed height
+  margin-right: 16px; // small gap between items
+}
+
+/* ─── The <img> itself: fill its parent, maintain aspect ratio, cover ──────── */
+.carousel-image {
+  width: 200%;
+  height: 200%;
+  object-fit: contain;
+  display: block; // remove any inline whitespace
+}
