@@ -2,6 +2,7 @@ import React from "react";
 import {motion} from "framer-motion";
 import "./App.scss";
 
+// import {Outlet} from "react-router-dom";
 import Shape from "./components/Shape";
 import CloudNavbar from "./components/CloudNavbar";
 import ParallaxScene from "./components/ParallaxScene";
@@ -139,10 +140,10 @@ function App() {
 
     return (
         <>
-            {/* Top-background */}
+            {/* Top‐background */}
             <div className="top-background"/>
 
-            {/* Blob overlays, mapped from blobSources */}
+            {/* Blob overlays */}
             {blobSources.map((src, idx) => (
                 <img
                     key={idx}
@@ -227,26 +228,29 @@ function App() {
                         ))}
                     </div>
                 </div>
-            </div>
 
-            {/* Thank You / Footer Hero */}
-            <div className="app">
-                <motion.h1
-                    initial={{y: -100, opacity: 0}}
-                    animate={{y: 100, opacity: 1}}
-                    transition={{type: "spring", stiffness: 70}}
-                    className="app-heading"
-                >
-                    THANKS FOR CHOOSING <Shape type="spike"/>
-                    <br/> KIKO ROMANIA <Shape type="circle"/>
-                    <br/>
-                    <Shape type="star"/> WE LOVE KIDS OF ANY SHAPE! <br/>
-                </motion.h1>
-            </div>
+                {/* Now we insert the Outlet for nested routes */}
+                {/*<Outlet/>*/}
 
-            {/* Footer */}
-            <div className="footer-app">
-                <Footer/>
+                {/* Thank You / Footer Hero */}
+                <div className="app">
+                    <motion.h1
+                        initial={{y: -100, opacity: 0}}
+                        animate={{y: 100, opacity: 1}}
+                        transition={{type: "spring", stiffness: 70}}
+                        className="app-heading"
+                    >
+                        THANKS FOR CHOOSING <Shape type="spike"/>
+                        <br/> KIKO ROMANIA <Shape type="circle"/>
+                        <br/>
+                        <Shape type="star"/> WE LOVE KIDS OF ANY SHAPE! <br/>
+                    </motion.h1>
+                </div>
+
+                {/* Footer */}
+                <div className="footer-app">
+                    <Footer/>
+                </div>
             </div>
         </>
     );
