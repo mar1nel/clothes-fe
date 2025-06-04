@@ -1,28 +1,25 @@
-/* ─── 1) Base footer styling ───────────────────────────────────────────────────────── */
 .footer {
   position: relative;
-  background-color: #0066e0; /* slightly brighter‐blue background */
+  background-color: #0066e0;
   color: #ffffff;
   overflow: hidden;
-  padding-top: 80px; /* extra space for scallops */
-  padding-bottom: 160px; /* extra space for enhanced blobs */
+  padding-top: 80px;
+  padding-bottom: 160px;
   font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
-/* ─── 2) Scalloped top edge ─────────────────────────────────────────────────────────── */
 .footer-scallops {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 50px; /* a bit taller for a more pronounced scallop */
+  height: 50px;
   background-color: #0066e0;
   mask-image: radial-gradient(circle at top center, transparent 18px, black 19px) 0 0/36px 50px repeat-x;
   -webkit-mask-image: radial-gradient(circle at top center, transparent 18px, black 19px) 0 0/36px 50px repeat-x;
   z-index: 2;
 }
 
-/* ─── 3) Main content columns ──────────────────────────────────────────────────────── */
 .footer-content {
   display: flex;
   flex-wrap: wrap;
@@ -32,27 +29,24 @@
   padding: 0 2rem;
 }
 
-/* Each column */
 .footer-col {
-  flex: 1 1 180px; /* grow, shrink, base width = 180px */
-  margin: 1.5rem 0; /* more vertical breathing room */
+  flex: 1 1 180px;
+  margin: 1.5rem 0;
 }
 
-/* Column heading text */
 .footer-heading {
-  font-size: 1rem; /* slightly larger for better hierarchy */
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 0.75rem; /* more space under heading */
+  margin-bottom: 0.75rem;
   opacity: 0.9;
   letter-spacing: 0.5px;
 }
 
-/* Links inside the columns */
 .footer-link {
   display: block;
   color: #ffffff;
-  font-size: 0.9rem; /* bumped up slightly */
-  line-height: 1.8; /* a bit more line spacing */
+  font-size: 0.9rem;
+  line-height: 1.8;
   text-decoration: none;
   margin-bottom: 0.4rem;
   transition: color 0.2s ease, transform 0.1s ease;
@@ -63,7 +57,6 @@
   transform: translateX(2px);
 }
 
-/* ─── 4) Centered logo + copyright ────────────────────────────────────────────────── */
 .footer-logo-container {
   text-align: center;
   margin-top: 2.5rem;
@@ -73,7 +66,7 @@
 }
 
 .footer-logo {
-  font-size: 3.5rem; /* increased size for stronger presence */
+  font-size: 3.5rem;
   font-weight: bold;
   letter-spacing: -1px;
   text-transform: uppercase;
@@ -86,61 +79,39 @@
   letter-spacing: 0.5px;
 }
 
-/* ─── 5) Decorative “blob” shapes at bottom ───────────────────────────────────────── */
-
-/* Base blob style: soft, slightly translucent, gradient‐tinted circles */
 .blob {
   position: absolute;
   bottom: 0;
-  border-radius: 50%;
   opacity: 0.8;
-  background: radial-gradient(
-                  circle at 30% 30%,
-                  rgba(255, 255, 255, 0.9) 0%,
-                  rgba(255, 255, 255, 0.7) 70%,
-                  transparent 100%
-  );
-  filter: blur(8px);
 }
 
-/* White blob (left) */
+/* White blob (left) with a very random shape */
 .blob-white {
   left: -80px;
   width: 200px;
   height: 140px;
+  background: #ffffff;
+  border-radius: 55% 35% 70% 40% / 50% 60% 30% 45%;
 }
 
-/* Pink blob (center) */
+/* Pink blob (center) with a different random form */
 .blob-pink {
   left: 45%;
   width: 240px;
   height: 160px;
-  background: radial-gradient(
-                  circle at 30% 30%,
-                  rgba(255, 0, 128, 0.9) 0%,
-                  rgba(255, 0, 128, 0.6) 70%,
-                  transparent 100%
-  );
-  filter: blur(10px);
+  background: hotpink;
+  border-radius: 40% 60% 50% 55% / 45% 35% 65% 50%;
 }
 
-/* Orange blob (right) */
+/* Orange blob (right) with yet another random contour */
 .blob-orange {
   right: -80px;
-  width: 220px;
+  width: 180px;
   height: 150px;
-  background: radial-gradient(
-                  circle at 30% 30%,
-                  rgba(255, 146, 0, 0.9) 0%,
-                  rgba(255, 146, 0, 0.6) 70%,
-                  transparent 100%
-  );
-  filter: blur(9px);
+  background: orangered;
+  border-radius: 60% 50% 40% 70% / 55% 45% 50% 65%;
 }
 
-/* ─── 6) Responsive tweaks ───────────────────────────────────────────────────────── */
-
-/* On narrow screens, stack columns and center blobs */
 @media screen and (max-width: 768px) {
   .footer-content {
     flex-direction: column;

@@ -7,9 +7,8 @@
   padding: 0 40px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
-  --mask:
-          radial-gradient(40.25px at 50% calc(100% - 54px),#000 99%,#0000 101%) calc(50% - 72px) 0/144px 100%,
-          radial-gradient(40.25px at 50% calc(100% + 18px),#0000 99%,#000 101%) 50% calc(100% - 36px)/144px 100% repeat-x;
+  --mask: radial-gradient(40.25px at 50% calc(100% - 54px), #000 99%, #0000 101%) calc(50% - 72px) 0/144px 100%,
+  radial-gradient(40.25px at 50% calc(100% + 18px), #0000 99%, #000 101%) 50% calc(100% - 36px)/144px 100% repeat-x;
   -webkit-mask: var(--mask);
   mask: var(--mask);
 
@@ -20,12 +19,12 @@
   .logo {
     color: white;
     font-weight: 800;
-    font-size: 22px;
-    margin-bottom: 40px;
+    font-size: 42px;
+    margin-bottom: 50px;
   }
 
   .nav-links {
-    margin-bottom: 40px;
+    margin-bottom: 45px;
     display: flex;
     justify-content: center;
     gap: 40px;
@@ -46,7 +45,7 @@
         left: 0;
         height: 2px;
         width: 100%;
-        background-color: white;
+        background-color: #ef5c00;
         transform: scaleX(0);
         transform-origin: right;
         transition: transform 0.3s ease;
