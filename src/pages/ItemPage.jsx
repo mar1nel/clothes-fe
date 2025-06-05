@@ -1,3 +1,4 @@
+// src/pages/ItemPage.jsx
 import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import "./ItemPage.scss";
@@ -17,7 +18,7 @@ export default function ItemPage() {
     const [selectedColor, setSelectedColor] = useState("");
     const [quantity, setQuantity] = useState(1);
 
-    // Hardcode a few choices (you can replace with data from your API if desired)
+    // Hardcode a few choices
     const availableSizes = ["XS", "S", "M", "L", "XL", "XXL"];
     const availableColours = [
         {name: "Green grass", value: "#84C225"},
@@ -26,7 +27,7 @@ export default function ItemPage() {
         {name: "Beige cream", value: "#F3E2C7"},
     ];
 
-    // Example: a fixed rating & reviews count (in real life, get from item)
+    // Example rating & review count
     const rating = 4.7;
     const reviewCount = 85;
 
@@ -39,11 +40,6 @@ export default function ItemPage() {
             })
             .then((data) => {
                 setItem(data);
-
-                // If your item JSON already has a default color/size, you can initialize:
-                // setSelectedSize(data.size || "S");
-                // setSelectedColor(data.colour || availableColours[0].value);
-
                 setLoading(false);
             })
             .catch((err) => {
@@ -57,13 +53,11 @@ export default function ItemPage() {
     if (error) return <div className="item-error">{error}</div>;
     if (!item) return null; // safety
 
-    // Determine a fallback image if item.imageUrl is missing
+    // Determine fallback image
     const numericId = Number(id);
     const fallbackIdx = (numericId - 1) % sampleImages.length;
     const imageSrc = item.imageUrl || sampleImages[fallbackIdx];
 
-    // Helper to render stars based on a 0-5 rating
-    // (here we round down each half-star; you can refine as needed)
     const renderStars = (ratingValue) => {
         const fullStars = Math.floor(ratingValue);
         const halfStar = ratingValue - fullStars >= 0.5;
@@ -81,6 +75,37 @@ export default function ItemPage() {
         }
 
         return starsArr;
+    };
+
+    // When “Add to bag” is clicked:
+    const handleAddToCart = async () => {
+        const storedUserId = localStorage.getItem("userId");
+        if (!storedUserId) {
+            alert("Please log in before adding items to the cart.");
+            return;
+        }
+        const userId = Number(storedUserId);
+
+        try {
+            // Make `quantity` POST calls to add one item each time
+            for (let i = 0; i < quantity; i++) {
+                const res = await fetch(
+                    `http://localhost:8080/api/users/${userId}/cart/${item.id}/add`,
+                    {method: "POST"}
+                );
+                if (!res.ok) {
+                    throw new Error(`Failed to add to cart (status ${res.status})`);
+                }
+            }
+            alert(
+                `Successfully added ${quantity}× "${item.name}" (Size: ${selectedSize}, Colour: ${
+                    selectedColor || "Default"
+                }) to cart.`
+            );
+        } catch (err) {
+            console.error("Add to cart error:", err);
+            alert("Error adding to cart. Please try again.");
+        }
     };
 
     return (
@@ -121,7 +146,10 @@ export default function ItemPage() {
 
                         {/* Price */}
                         <p className="item-price">
-                            <strong>{item.currency || "$"}{item.price.toFixed(2)}</strong>
+                            <strong>
+                                {item.currency || "$"}
+                                {item.price.toFixed(2)}
+                            </strong>
                         </p>
 
                         {/* Pick your size */}
@@ -186,27 +214,7 @@ export default function ItemPage() {
                             </div>
                             <button
                                 className="add-to-bag-btn"
-                                onClick={() => {
-                                    // Replace with real “add to cart” logic:
-                                    alert(
-                                        `Added ${quantity}× "${item.name}" (Size: ${selectedSize}, Colour: ${
-                                            selectedColor || "Default"
-                                        }) to bag.`
-                                    );
-                                }}
-                            >
-                                Add to bag
-                            </button>
-                            <button
-                                className="add-to-bag-btn"
-                                onClick={() => {
-                                    // Replace with real “add to cart” logic:
-                                    alert(
-                                        `Added ${quantity}× "${item.name}" (Size: ${selectedSize}, Colour: ${
-                                            selectedColor || "Default"
-                                        }) to bag.`
-                                    );
-                                }}
+                                onClick={handleAddToCart}
                             >
                                 Add to bag
                             </button>
