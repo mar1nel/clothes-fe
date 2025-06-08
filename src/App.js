@@ -134,9 +134,6 @@ const SampleGrid = ({marginTop}) => (
 );
 
 function App() {
-    const handleClick = () => {
-        console.log("Button clicked!");
-    };
 
     return (
         <>
@@ -194,7 +191,6 @@ function App() {
                     <GoShoppingButton
                         bgColor="#ebff00"
                         fontColor="#2a4d14"
-                        onClick={handleClick}
                     >
                         Go Shopping
                     </GoShoppingButton>

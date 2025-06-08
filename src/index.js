@@ -7,6 +7,7 @@ import Authentification from "./pages/Authentification";
 import {createRoot} from "react-dom/client";
 import ItemPage from "./pages/ItemPage";
 import ShopPage from "./pages/ShopPage";
+import {AuthProvider} from "./contexts/AuthContext";
 
 
 const router = createBrowserRouter([
@@ -22,8 +23,10 @@ const router = createBrowserRouter([
 
 const root = createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <RouterProvider router={router}/>
-    </React.StrictMode>,
+    <AuthProvider>
+        <React.StrictMode>
+            <RouterProvider router={router}/>
+        </React.StrictMode>
+    </AuthProvider>,
 );
 

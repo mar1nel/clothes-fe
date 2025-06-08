@@ -1,11 +1,12 @@
-// src/components/CloudNavbar.jsx
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
 import "./CloudNavbar.scss";
 import CartDrawer from "./CartDrawer";
+import {useAuth} from "../contexts/AuthContext";
 
 const CloudNavbar = () => {
     const [showCart, setShowCart] = useState(false);
+    const {userId} = useAuth();
 
     return (
         <>
@@ -21,15 +22,18 @@ const CloudNavbar = () => {
                 </div>
 
                 <div className="nav-actions">
-          <span className="cart-link" onClick={() => setShowCart(true)}>
-            Cart
-          </span>
+                    {userId && (
+                        <span className="cart-link" onClick={() => setShowCart(true)}>
+              Cart
+            </span>
+                    )}
                     <Link to="/auth">Auth</Link>
                 </div>
             </nav>
 
-            {/* CartDrawer slides in/out based on showCart */}
-            <CartDrawer visible={showCart} onClose={() => setShowCart(false)}/>
+            {userId && (
+                <CartDrawer visible={showCart} onClose={() => setShowCart(false)}/>
+            )}
         </>
     );
 };
