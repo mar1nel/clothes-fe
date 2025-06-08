@@ -23,9 +23,12 @@ const CloudNavbar = () => {
 
                 <div className="nav-actions">
                     {userId && (
-                        <span className="cart-link" onClick={() => setShowCart(true)}>
-              Cart
-            </span>
+                        <span
+                            id="cart-icon"
+                            className="cart-link"
+                            onClick={() => setShowCart(true)}
+                        >Cart</span>
+
                     )}
                     <Link to="/auth">Auth</Link>
                 </div>

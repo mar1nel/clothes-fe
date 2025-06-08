@@ -1,255 +1,217 @@
-/* ItemPage.scss */
+/* src/components/ItemPage.scss */
 
-/* Container around whole page (below navbar) */
-.item-container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+:root {
+  --primary: #ffd54f;
+  --secondary: #fbc02d;
+  --accent: #fff176;
+  --text-dark: #5d4037;
 }
 
-/* “← Back” button */
+.item-container {
+  font-family: "Martian Mono", monospace;
+  background: var(--bg);
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  position: relative;
+}
+
 .item-back-button {
-  background: none;
+  background: var(--primary);
+  color: white;
   border: none;
-  color: #555;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 16px;
   cursor: pointer;
+  transition: background 0.2s;
   margin-bottom: 1rem;
-  transition: color 0.15s ease;
 }
 
 .item-back-button:hover {
-  color: #333;
+  background: #c69800;
 }
 
-/* Flex layout: image on left, info on right */
 .item-content {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
 }
 
-/* ===== Left: Image (takes ~50% on desktop) ===== */
 .item-image-wrapper {
-  flex: 1 1 400px;
-  max-width: 500px;
-  border-radius: 8px;
+  flex: 1 1 300px;
+  max-width: 300px;
+  border-radius: 16px;
   overflow: hidden;
-  background-color: #f0f0f0; /* placeholder gray while image loads */
+  background: white;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
-.item-image {
+.item-image-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
+  transition: transform 0.4s;
 }
 
-/* ===== Right: Info Section ===== */
+.item-image-wrapper:hover img {
+  transform: scale(1.08) rotate(2deg);
+}
+
 .item-info {
   flex: 1 1 300px;
-  max-width: 500px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-/* “New!” badge above title */
 .item-badge {
-  display: inline-block;
-  background-color: #ffe066; /* bright yellow */
-  color: #333;
-  font-size: 0.85rem;
-  font-weight: bold;
-  padding: 0.2rem 0.6rem;
+  background: var(--secondary);
+  color: white;
+  padding: 0.3rem 0.7rem;
   border-radius: 12px;
-  align-self: flex-start;
+  font-size: 0.9rem;
+  width: fit-content;
 }
 
-/* Product name/title */
 .item-name {
-  font-size: 2rem;
-  margin: 0.25rem 0 0.5rem;
-  color: #222;
+  font-size: 2.2rem;
+  color: var(--text-dark);
+  margin: 0;
 }
 
-/* Rating & review count */
 .item-rating {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.stars {
-  display: flex;
-  gap: 0.1rem;
+.item-rating .star.full {
+  color: var(--accent);
+  font-size: 1.3rem;
 }
 
-.star.full {
-  color: #ffb703; /* gold */
-  font-size: 1.1rem;
+.item-rating .star.empty {
+  color: #cfd8dc;
+  font-size: 1.3rem;
 }
 
-.star.half {
-  color: #ffb703;
-  font-size: 1.1rem;
-  /* You can swap to a half‐star SVG if you prefer */
-}
-
-.star.empty {
-  color: #ccc;
-  font-size: 1.1rem;
-}
-
-.review-count {
+.item-rating .review-count {
+  color: var(--text-dark);
   font-size: 0.9rem;
-  color: #666;
 }
 
-/* Price */
 .item-price {
-  font-size: 1.75rem;
-  margin: 0.5rem 0;
-  color: #111;
+  font-size: 2rem;
+  color: var(--primary);
+  font-weight: bold;
 }
 
-/* Each “section” (size / colour / quantity) */
 .item-section {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-/* Label inside each section */
 .section-label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
+  font-weight: bold;
+  color: var(--text-dark);
 }
 
-/* Size buttons (row) */
-.size-options {
+.size-options, .colour-options {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
 .size-button {
-  background: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.4rem 0.75rem;
+  background: white;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: 0.4rem 0.8rem;
+  color: var(--primary);
   cursor: pointer;
-  font-size: 0.95rem;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.2s, color 0.2s;
 }
 
-.size-button:hover {
-  background: #e0e0e0;
-}
-
-.size-button.selected {
-  background: #3f72af; /* blue highlight */
-  border-color: #3f72af;
-  color: #fff;
-}
-
-/* Colour buttons (row of squares) */
-.colour-options {
-  display: flex;
-  gap: 0.5rem;
+.size-button.selected, .size-button:hover {
+  background: var(--primary);
+  color: white;
 }
 
 .colour-button {
   width: 32px;
   height: 32px;
   border: 2px solid #fff;
-  border-radius: 4px;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: border-color 0.15s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.colour-button:hover {
-  border-color: #888;
 }
 
 .colour-button.selected {
-  border-color: #3f72af; /* blue outline when selected */
+  box-shadow: 0 0 0 3px var(--primary);
 }
 
-/* Quantity + Add to bag row */
 .quantity-section {
   display: flex;
-  align-items: center;
+  align-items: start;
   gap: 1rem;
+  flex-wrap: wrap;
   margin-top: 1rem;
 }
 
-/* “Quantity:” label */
-.quantity-label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-}
-
-/* Qty +/- buttons */
 .quantity-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  background: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 12px;
+  border: 2px solid var(--primary);
 }
 
 .qty-btn {
-  width: 32px;
-  height: 32px;
-  background: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1.25rem;
-  line-height: 1;
-  text-align: center;
+  background: var(--accent);
+  border: none;
+  color: white;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.2s;
 }
 
 .qty-btn:hover {
-  background: #e0e0e0;
+  background: #ffb300;
 }
 
 .qty-display {
+  font-weight: bold;
+  color: var(--text-dark);
   min-width: 24px;
   text-align: center;
-  font-size: 1rem;
 }
 
-/* “Add to bag” button */
 .add-to-bag-btn {
-  margin-left: auto; /* push it to the far right of the row */
-  background-color: #ffe066; /* bright yellow to stand out */
+  background: var(--secondary);
+  color: white;
   border: none;
-  color: #222;
+  padding: 0.6rem 1.2rem;
+  border-radius: 16px;
   font-size: 1rem;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.2s;
 }
 
 .add-to-bag-btn:hover {
-  background-color: #ffd43b;
+  background: #ff7043;
 }
 
-/* Responsive: stack vertically on smaller screens */
 @media (max-width: 768px) {
   .item-content {
     flex-direction: column;
-    gap: 1.5rem;
   }
-  .item-image-wrapper,
-  .item-info {
-    max-width: 100%;
+  .item-image-wrapper, .item-info {
     flex: 1 1 100%;
   }
 }

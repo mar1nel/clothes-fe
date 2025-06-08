@@ -1,5 +1,5 @@
-// src/pages/ItemPage.jsx
-import {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import {AnimatePresence, motion} from "framer-motion";
 import {useNavigate, useParams} from "react-router-dom";
 import "./ItemPage.scss";
 import CloudNavbar from "../components/CloudNavbar";
@@ -9,16 +9,21 @@ export default function ItemPage() {
     const {id} = useParams();
     const navigate = useNavigate();
 
+    // Data fetching state
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Local UI state for size, colour, and quantity
+    // UI state
     const [selectedSize, setSelectedSize] = useState("S");
     const [selectedColor, setSelectedColor] = useState("");
     const [quantity, setQuantity] = useState(1);
 
-    // Hardcode a few choices
+    // Animation hooks (must always be called)
+    const addBtnRef = useRef(null);
+    const [flyAnim, setFlyAnim] = useState(false);
+    const [coords, setCoords] = useState({x0: 0, y0: 0, x1: 0, y1: 0});
+
     const availableSizes = ["XS", "S", "M", "L", "XL", "XXL"];
     const availableColours = [
         {name: "Green grass", value: "#84C225"},
@@ -27,22 +32,20 @@ export default function ItemPage() {
         {name: "Beige cream", value: "#F3E2C7"},
     ];
 
-    // Example rating & review count
     const rating = 4.7;
     const reviewCount = 85;
 
-    // Fetch single item by id
     useEffect(() => {
         fetch(`http://localhost:8080/api/clothes/${id}`)
-            .then((res) => {
+            .then(res => {
                 if (!res.ok) throw new Error("Item not found");
                 return res.json();
             })
-            .then((data) => {
+            .then(data => {
                 setItem(data);
                 setLoading(false);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.error(err);
                 setError("Could not load item.");
                 setLoading(false);
@@ -51,60 +54,57 @@ export default function ItemPage() {
 
     if (loading) return <div className="item-loading">Loading...</div>;
     if (error) return <div className="item-error">{error}</div>;
-    if (!item) return null; // safety
+    if (!item) return null;
 
-    // Determine fallback image
     const numericId = Number(id);
-    const fallbackIdx = (numericId - 1) % sampleImages.length;
-    const imageSrc = item.imageUrl || sampleImages[fallbackIdx];
+    const imageSrc = item.imageUrl || sampleImages[(numericId - 1) % sampleImages.length];
 
-    const renderStars = (ratingValue) => {
-        const fullStars = Math.floor(ratingValue);
-        const halfStar = ratingValue - fullStars >= 0.5;
-        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-        const starsArr = [];
-
-        for (let i = 0; i < fullStars; i++) {
-            starsArr.push(<span key={"full" + i} className="star full">★</span>);
-        }
-        if (halfStar) {
-            starsArr.push(<span key="half" className="star half">☆</span>);
-        }
-        for (let i = 0; i < emptyStars; i++) {
-            starsArr.push(<span key={"empty" + i} className="star empty">☆</span>);
-        }
-
-        return starsArr;
+    const renderStars = value => {
+        const full = Math.floor(value);
+        const half = value - full >= 0.5;
+        const empty = 5 - full - (half ? 1 : 0);
+        const stars = [];
+        for (let i = 0; i < full; i++) stars.push(<span key={`f${i}`} className="star full">★</span>);
+        if (half) stars.push(<span key="half" className="star half">☆</span>);
+        for (let i = 0; i < empty; i++) stars.push(<span key={`e${i}`} className="star empty">☆</span>);
+        return stars;
     };
 
-    // When “Add to bag” is clicked:
     const handleAddToCart = async () => {
-        const storedUserId = localStorage.getItem("userId");
-        if (!storedUserId) {
-            alert("Please log in before adding items to the cart.");
-            return;
-        }
-        const userId = Number(storedUserId);
+        const stored = localStorage.getItem("userId");
+        if (!stored) return;
+        const userId = Number(stored);
 
         try {
-            // Make `quantity` POST calls to add one item each time
-            for (let i = 0; i < quantity; i++) {
-                const res = await fetch(
-                    `http://localhost:8080/api/users/${userId}/cart/${item.id}/add`,
-                    {method: "POST"}
-                );
-                if (!res.ok) {
-                    throw new Error(`Failed to add to cart (status ${res.status})`);
+            const res = await fetch(
+                `http://localhost:8080/api/users/${userId}/cart/${item.id}/add`,
+                {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({quantity, size: selectedSize, colour: selectedColor}),
                 }
-            }
-            alert(
-                `Successfully added ${quantity}× "${item.name}" (Size: ${selectedSize}, Colour: ${
-                    selectedColor || "Default"
-                }) to cart.`
             );
+            if (!res.ok) throw new Error(`Status ${res.status}`);
         } catch (err) {
             console.error("Add to cart error:", err);
-            alert("Error adding to cart. Please try again.");
+            alert("Error adding to cart.");
+            return;
+        }
+
+        // Trigger fly animation
+        const btn = addBtnRef.current;
+        const cartIcon = document.getElementById("cart-icon");
+        if (btn && cartIcon) {
+            const b = btn.getBoundingClientRect();
+            const c = cartIcon.getBoundingClientRect();
+            setCoords({
+                x0: b.left + b.width / 2,
+                y0: b.top + b.height / 2,
+                x1: c.left + c.width / 2,
+                y1: c.top + c.height / 2,
+            });
+            setFlyAnim(true);
+            setTimeout(() => setFlyAnim(false), 700);
         }
     };
 
@@ -112,78 +112,54 @@ export default function ItemPage() {
         <>
             <CloudNavbar/>
 
+            <button
+                className="item-back-button"
+                onClick={() => {
+                    if (window.history.length > 1) {
+                        navigate(-1);
+                    } else {
+                        navigate('/shop');
+                    }
+                }}
+            >
+                ← Back
+            </button>
+
             <div className="item-container">
-                <button
-                    className="item-back-button"
-                    onClick={() => navigate(-1)}
-                >
-                    ← Back
-                </button>
 
                 <div className="item-content">
-                    {/* ===== Left: Large Image ===== */}
                     <div className="item-image-wrapper">
-                        <img
-                            src={imageSrc}
-                            alt={item.name}
-                            className="item-image"
-                        />
+                        <img src={imageSrc} alt={item.name} className="item-image"/>
                     </div>
-
-                    {/* ===== Right: Info & Controls ===== */}
                     <div className="item-info">
-                        {/* Badge (e.g. “New!”) */}
                         {item.isNew && <div className="item-badge">New!</div>}
-
-                        {/* Title */}
                         <h1 className="item-name">{item.name}</h1>
-
-                        {/* Rating + review count */}
                         <div className="item-rating">
                             <div className="stars">{renderStars(rating)}</div>
                             <span className="review-count">{reviewCount} reviews</span>
                         </div>
-
-                        {/* Price */}
                         <p className="item-price">
-                            <strong>
-                                {item.currency || "$"}
-                                {item.price.toFixed(2)}
-                            </strong>
+                            <strong>{item.currency || '$'}{item.price.toFixed(2)}</strong>
                         </p>
-
-                        {/* Pick your size */}
                         <div className="item-section">
                             <div className="section-label">Pick your size:</div>
                             <div className="size-options">
-                                {availableSizes.map((sz) => (
+                                {availableSizes.map(sz => (
                                     <button
                                         key={sz}
-                                        className={
-                                            selectedSize === sz
-                                                ? "size-button selected"
-                                                : "size-button"
-                                        }
+                                        className={sz === selectedSize ? 'size-button selected' : 'size-button'}
                                         onClick={() => setSelectedSize(sz)}
-                                    >
-                                        {sz}
-                                    </button>
+                                    >{sz}</button>
                                 ))}
                             </div>
                         </div>
-
-                        {/* Choose a colour */}
                         <div className="item-section">
                             <div className="section-label">Choose a colour:</div>
                             <div className="colour-options">
-                                {availableColours.map((col) => (
+                                {availableColours.map(col => (
                                     <button
                                         key={col.name}
-                                        className={
-                                            selectedColor === col.value
-                                                ? "colour-button selected"
-                                                : "colour-button"
-                                        }
+                                        className={col.value === selectedColor ? 'colour-button selected' : 'colour-button'}
                                         onClick={() => setSelectedColor(col.value)}
                                         style={{backgroundColor: col.value}}
                                         title={col.name}
@@ -191,37 +167,46 @@ export default function ItemPage() {
                                 ))}
                             </div>
                         </div>
-
-                        {/* Quantity + Add to bag */}
                         <div className="item-section quantity-section">
                             <div className="quantity-label">Quantity:</div>
                             <div className="quantity-controls">
-                                <button
-                                    className="qty-btn"
-                                    onClick={() =>
-                                        setQuantity((q) => (q > 1 ? q - 1 : 1))
-                                    }
-                                >
-                                    −
+                                <button className="qty-btn" onClick={() => setQuantity(q => Math.max(1, q - 1))}>−
                                 </button>
                                 <span className="qty-display">{quantity}</span>
-                                <button
-                                    className="qty-btn"
-                                    onClick={() => setQuantity((q) => q + 1)}
-                                >
-                                    +
-                                </button>
+                                <button className="qty-btn" onClick={() => setQuantity(q => q + 1)}>+</button>
                             </div>
                             <button
+                                ref={addBtnRef}
                                 className="add-to-bag-btn"
                                 onClick={handleAddToCart}
-                            >
-                                Add to bag
+                            >Add to bag
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+            <AnimatePresence>
+                {flyAnim && (
+                    <motion.div
+                        key="fly-circle"
+                        initial={{x: coords.x0, y: coords.y0, scale: 1.2}}
+                        animate={{x: coords.x1, y: coords.y1, scale: 0.3}}
+                        exit={{opacity: 0}}
+                        transition={{duration: 0.7, ease: 'easeInOut'}}
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            width: 30,
+                            height: 30,
+                            borderRadius: '50%',
+                            background: '#ff3232',
+                            pointerEvents: 'none',
+                            zIndex: 99,
+                        }}
+                    />
+                )}
+            </AnimatePresence>
         </>
     );
 }

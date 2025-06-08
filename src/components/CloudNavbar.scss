@@ -1,4 +1,16 @@
 .cloud-navbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  height: 180px;
+  padding: 0 40px;
+  background-color: #007bff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 0;
+  font-family: 'Martian Mono', monospace;
+
+
   background-color: #007bff;
   height: 180px;
   position: relative;
@@ -20,28 +32,29 @@
     color: white;
     font-weight: 800;
     font-size: 42px;
-    margin-bottom: 50px;
+    margin-bottom: 3rem;
+    line-height: 1;
   }
 
   .nav-links {
-    margin-bottom: 45px;
     display: flex;
     justify-content: center;
     gap: 40px;
+    margin-bottom: 3rem;
 
     a {
       color: white;
       text-decoration: none;
       font-weight: 600;
       font-size: 16px;
-      margin-top: -20px;
       position: relative;
+      padding: 0.5rem 0; // vertical padding rather than negative margin
       transition: color 0.3s ease;
 
       &::after {
         content: "";
         position: absolute;
-        bottom: 0;
+        bottom: -4px;
         left: 0;
         height: 2px;
         width: 100%;
@@ -51,28 +64,45 @@
         transition: transform 0.3s ease;
       }
 
-      //&:hover {
-      //  //color: #ffe866;
-      //
-      //  &::after {
-      //    transform: scaleX(1);
-      //    transform-origin: left;
-      //  }
-      //}
+      &:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
     }
   }
 
   .nav-actions {
-    margin-bottom: 40px;
     display: flex;
+    align-items: center; // vertically center cart and auth link
     gap: 20px;
+    margin-bottom: 3rem;
+
+    .cart-link {
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 0.5rem 0; // match the vertical padding of the links
+      line-height: 1;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #ffe866;
+      }
+    }
 
     a {
       color: white;
       font-weight: 600;
       text-decoration: none;
       font-size: 16px;
-      margin-top: -20px;
+      padding: 0.5rem 0; // match padding
+      line-height: 1;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #ffe866;
+      }
     }
   }
 }
