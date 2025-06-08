@@ -72,26 +72,27 @@ export default function ItemPage() {
 
     const handleAddToCart = async () => {
         const stored = localStorage.getItem("userId");
-        if (!stored) return;
+        if (!stored) return alert("Please log in first.");
         const userId = Number(stored);
 
         try {
-            const res = await fetch(
-                `http://localhost:8080/api/users/${userId}/cart/${item.id}/add`,
-                {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({quantity, size: selectedSize, colour: selectedColor}),
+            // Call the “add one” endpoint quantity times
+            for (let i = 0; i < quantity; i++) {
+                const res = await fetch(
+                    `http://localhost:8080/api/users/${userId}/cart/${item.id}/add`,
+                    {method: "POST"}
+                );
+                if (!res.ok) {
+                    throw new Error(`Failed to add item #${i + 1} (status ${res.status})`);
                 }
-            );
-            if (!res.ok) throw new Error(`Status ${res.status}`);
+            }
         } catch (err) {
             console.error("Add to cart error:", err);
-            alert("Error adding to cart.");
+            alert("Error adding items to cart.");
             return;
         }
 
-        // Trigger fly animation
+        // Trigger fly animation…
         const btn = addBtnRef.current;
         const cartIcon = document.getElementById("cart-icon");
         if (btn && cartIcon) {
@@ -139,7 +140,7 @@ export default function ItemPage() {
                             <span className="review-count">{reviewCount} reviews</span>
                         </div>
                         <p className="item-price">
-                            <strong>{item.currency || '$'}{item.price.toFixed(2)}</strong>
+                            <strong>{item.currency || 'RON'}{item.price.toFixed(2)}</strong>
                         </p>
                         <div className="item-section">
                             <div className="section-label">Pick your size:</div>

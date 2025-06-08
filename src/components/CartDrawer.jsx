@@ -9,14 +9,12 @@ export default function CartDrawer({visible, onClose}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // GET uses /api/{userId}/cart, mutations use /api/users/{userId}/cart
     const FETCH_BASE = `http://localhost:8080/api/${userId}/cart`;
     const MUTATE_BASE = `http://localhost:8080/api/users/${userId}/cart`;
 
     useEffect(() => {
         if (!visible || !userId) return;
 
-        console.log("[CartDrawer] Fetching cart for userId:", userId);
         setLoading(true);
         setError(null);
 
@@ -24,17 +22,15 @@ export default function CartDrawer({visible, onClose}) {
             try {
                 const res = await fetch(FETCH_BASE);
                 if (res.status === 404) {
-                    console.log("[CartDrawer] Cart not found");
                     setCartItems([]);
                 } else if (!res.ok) {
                     throw new Error(`Status ${res.status}`);
                 } else {
                     const data = await res.json();
-                    console.log("[CartDrawer] Cart data:", data);
                     setCartItems(Array.isArray(data) ? data : []);
                 }
             } catch (err) {
-                console.error("[CartDrawer] Fetch error:", err);
+                console.error(err);
                 setError("Could not load cart.");
             } finally {
                 setLoading(false);
@@ -43,49 +39,40 @@ export default function CartDrawer({visible, onClose}) {
     }, [visible, userId]);
 
     const handleRemove = async (clothesId) => {
-        console.log("[CartDrawer] Remove all of", clothesId);
         try {
             const res = await fetch(`${MUTATE_BASE}/${clothesId}`, {method: "DELETE"});
             if (!res.ok) throw new Error(`Status ${res.status}`);
-            setCartItems((prev) => prev.filter((ci) => ci.clothes.id !== clothesId));
+            setCartItems(prev => prev.filter(ci => ci.clothes.id !== clothesId));
         } catch (err) {
-            console.error("[CartDrawer] Remove error:", err);
+            console.error(err);
             alert("Error removing item.");
         }
     };
 
     const handleDecrement = async (clothesId) => {
-        console.log("[CartDrawer] Decrement", clothesId);
         try {
             const res = await fetch(`${MUTATE_BASE}/${clothesId}/removeOne`, {method: "POST"});
             if (!res.ok) throw new Error(`Status ${res.status}`);
-            setCartItems((prev) =>
+            setCartItems(prev =>
                 prev
-                    .map((ci) =>
-                        ci.clothes.id === clothesId ? {...ci, quantity: ci.quantity - 1} : ci
-                    )
-                    .filter((ci) => ci.quantity > 0)
+                    .map(ci => ci.clothes.id === clothesId ? {...ci, quantity: ci.quantity - 1} : ci)
+                    .filter(ci => ci.quantity > 0)
             );
         } catch (err) {
-            console.error("[CartDrawer] Decrement error:", err);
+            console.error(err);
             alert("Error decrementing item.");
         }
     };
 
     const handleIncrement = async (clothesId) => {
-        console.log("[CartDrawer] Increment", clothesId);
         try {
             const res = await fetch(`${MUTATE_BASE}/${clothesId}/add`, {method: "POST"});
             if (!res.ok) throw new Error(`Status ${res.status}`);
-            setCartItems((prev) =>
-                prev.map((ci) =>
-                    ci.clothes.id === clothesId
-                        ? {...ci, quantity: ci.quantity + 1}
-                        : ci
-                )
+            setCartItems(prev =>
+                prev.map(ci => ci.clothes.id === clothesId ? {...ci, quantity: ci.quantity + 1} : ci)
             );
         } catch (err) {
-            console.error("[CartDrawer] Increment error:", err);
+            console.error(err);
             alert("Error incrementing item.");
         }
     };
@@ -94,7 +81,25 @@ export default function CartDrawer({visible, onClose}) {
         (sum, ci) => sum + ci.clothes.price * ci.quantity,
         0
     );
-    console.log("[CartDrawer] Total:", totalPrice.toFixed(2));
+
+    const handleCheckout = async () => {
+        if (!userId) {
+            alert("Please log in to checkout.");
+            return;
+        }
+        try {
+            const res = await fetch("http://localhost:8080/api/checkout", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({userId}),
+            });
+            const {url} = await res.json();
+            window.location.href = url;
+        } catch (err) {
+            console.error(err);
+            alert("Could not start checkout.");
+        }
+    };
 
     return (
         <>
@@ -102,7 +107,7 @@ export default function CartDrawer({visible, onClose}) {
             <div className={`cart-drawer ${visible ? "open" : ""}`}>
                 <div className="cart-header">
                     <h2>Your Cart</h2>
-                    <button onClick={onClose} className="close-btn">&times;</button>
+                    <button className="close-btn" onClick={onClose}>&times;</button>
                 </div>
 
                 {loading && <div className="cart-loading">Loading…</div>}
@@ -113,46 +118,58 @@ export default function CartDrawer({visible, onClose}) {
                         {cartItems.length === 0 ? (
                             <p className="empty-msg">Your cart is empty.</p>
                         ) : (
-                            cartItems.map((ci) => (
+                            cartItems.map(ci => (
                                 <div key={ci.clothes.id} className="cart-item">
-                                    {ci.clothes.imageUrl ? (
+                                    {ci.clothes.imageUrl && (
                                         <img
                                             src={ci.clothes.imageUrl}
                                             alt={ci.clothes.name}
                                             className="cart-item-img"
                                         />
-                                    ) : null}
+                                    )}
                                     <div className="cart-item-info">
                                         <div className="cart-item-name">{ci.clothes.name}</div>
                                         <div className="cart-item-qty-price">
                                             <button
-                                                onClick={() => handleDecrement(ci.clothes.id)}
-                                                disabled={ci.quantity <= 1}
                                                 className="qty-btn"
+                                                disabled={ci.quantity <= 1}
+                                                onClick={() => handleDecrement(ci.clothes.id)}
                                             >
                                                 –
                                             </button>
                                             <span className="qty-display">{ci.quantity}</span>
                                             <button
-                                                onClick={() => handleIncrement(ci.clothes.id)}
                                                 className="qty-btn"
+                                                onClick={() => handleIncrement(ci.clothes.id)}
                                             >
                                                 +
                                             </button>
                                             <span className="item-price">
-                        ${(ci.clothes.price * ci.quantity).toFixed(2)}
+                        RON {(ci.clothes.price * ci.quantity).toFixed(2)}
                       </span>
                                         </div>
                                     </div>
                                     <button
-                                        onClick={() => handleRemove(ci.clothes.id)}
                                         className="remove-btn"
+                                        onClick={() => handleRemove(ci.clothes.id)}
                                     >
                                         Remove
                                     </button>
                                 </div>
                             ))
                         )}
+                    </div>
+                )}
+
+                {cartItems.length > 0 && (
+                    <div className="cart-footer">
+                        <div className="total">
+                            <span>Total:</span>
+                            <span className="total-price">RON {totalPrice.toFixed(2)}</span>
+                        </div>
+                        <button className="checkout-btn" onClick={handleCheckout}>
+                            Checkout
+                        </button>
                     </div>
                 )}
             </div>
