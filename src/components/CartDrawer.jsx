@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import "./CartDrawer.scss";
 import {useAuth} from "../contexts/AuthContext";
+import { loadStripe } from '@stripe/stripe-js';
 
 export default function CartDrawer({visible, onClose}) {
     const {userId} = useAuth();
@@ -87,14 +88,24 @@ export default function CartDrawer({visible, onClose}) {
             alert("Please log in to checkout.");
             return;
         }
+
+        const stripePromise = loadStripe('pk_test_51RKlE6QrCy658sQLMNkNm9Tp7RrkYwk3cHFwDrfwOTNAGj5HHeoCxZ6ieOnDKYdOd3DO2He73HQUmr9r2VQ4Iuc600RGI5sHaF');
+        const stripe = await stripePromise;
         try {
-            const res = await fetch("http://localhost:8080/api/checkout", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({userId}),
+            const orderResp = await fetch(`http://localhost:8080/api/orders/checkout?userId=${userId}`, {
+                method: "POST"
             });
-            const {url} = await res.json();
-            window.location.href = url;
+            const { orderId } = await orderResp.json();
+
+            // 2. Create Stripe session
+            const stripeResp = await fetch(`http://localhost:8080/api/checkout-session/${orderId}`, {
+                method: "POST"
+            });
+            const { sessionId } = await stripeResp.json();
+            //akshan key:pk_test_51RKlE6QrCy658sQLMNkNm9Tp7RrkYwk3cHFwDrfwOTNAGj5HHeoCxZ6ieOnDKYdOd3DO2He73HQUmr9r2VQ4Iuc600RGI5sHaF
+            // Replace with your Stripe public key!
+            await stripe.redirectToCheckout({ sessionId });
+
         } catch (err) {
             console.error(err);
             alert("Could not start checkout.");

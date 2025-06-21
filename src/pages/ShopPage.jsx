@@ -80,8 +80,8 @@ export default function ShopPage() {
                     {filteredItems.map((item) => {
                         const numericId = Number(item.id);
                         const fallbackIdx = (numericId - 1) % sampleImages.length;
-                        const imageSrc = item.imageUrl || sampleImages[fallbackIdx];
-
+                        //const imageSrc = item.imageUrl || sampleImages[fallbackIdx];
+                        const imageSrc = item.imageUrl;
                         return (
                             <Link
                                 to={`/shop/${item.id}`}

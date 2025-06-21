@@ -57,8 +57,8 @@ export default function ItemPage() {
     if (!item) return null;
 
     const numericId = Number(id);
-    const imageSrc = item.imageUrl || sampleImages[(numericId - 1) % sampleImages.length];
-
+    //const imageSrc = item.imageUrl || sampleImages[(numericId - 1) % sampleImages.length];
+    const imageSrc = item.imageUrl;
     const renderStars = value => {
         const full = Math.floor(value);
         const half = value - full >= 0.5;
@@ -76,7 +76,6 @@ export default function ItemPage() {
         const userId = Number(stored);
 
         try {
-            // Call the “add one” endpoint quantity times
             for (let i = 0; i < quantity; i++) {
                 const res = await fetch(
                     `http://localhost:8080/api/users/${userId}/cart/${item.id}/add`,

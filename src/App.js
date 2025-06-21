@@ -2,7 +2,6 @@ import React from "react";
 import {motion} from "framer-motion";
 import "./App.scss";
 
-// import {Outlet} from "react-router-dom";
 import Shape from "./components/Shape";
 import CloudNavbar from "./components/CloudNavbar";
 import ParallaxScene from "./components/ParallaxScene";
